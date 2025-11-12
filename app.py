@@ -23,7 +23,8 @@ def process_excel(uploaded_file):
         new_df['TAM'] = df['TAM']
         new_df['QUANT'] = df['QUANT']
         new_df['QUANT EXTRA'] = df['QUANT'] + 5
-        new_df['VALOR'] = df['MSRP'].apply(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        new_df['VALOR'] = df['MSRP'].apply(lambda x: f"{x:.2f}")
+        new_df['NUM DA ETQ'] = ''
         new_df['VALOR DO FILTRO'] = 1
         df_ean_str = df['EAN'].astype(str).str.zfill(13)
         new_df['PREFIXO DA EMP'] = df_ean_str.str[:7]
@@ -39,7 +40,7 @@ def process_excel(uploaded_file):
         expanded_df = pd.DataFrame(expanded_rows)
 
         # 4. Adicionar NUM DA ETQ
-        expanded_df['NUM DA ETQ'] = [f"{i:06d}" for i in range(1, len(expanded_df) + 1)]
+        # expanded_df['NUM DA ETQ'] = [f"{i:06d}" for i in range(1, len(expanded_df) + 1)]
 
         # 5. Reordenar colunas para a ordem final desejada
         final_columns = [
