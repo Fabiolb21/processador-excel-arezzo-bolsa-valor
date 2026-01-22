@@ -14,18 +14,18 @@ def process_excel(uploaded_file):
         new_df = pd.DataFrame()
 
         # 2. Mapear e transformar colunas
-        new_df['PEDIDO'] = df['PEDIDO'].astype(str).str.replace(',', '', regex=False)
-        new_df['STYLE NAME'] = df['STYLE_NAME']
-        new_df['MATERIAL-COLOR'] = df['MATERIAL_COLOR']
-        new_df['SKU'] = df['SKU']
-        new_df['MODELO'] = df['REFERENCIA_LOJA']
-        new_df['EAN'] = df['EAN'].astype(str).str.replace(',', '', regex=False)
-        new_df['TAM'] = df['TAM']
-        new_df['QUANT'] = df['QUANT']
-        new_df['QUANT EXTRA'] = df['QUANT'] + 5
-        new_df['VALOR'] = df['MSRP'].apply(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        new_df['Pedido'] = df['Pedido'].astype(str).str.replace(',', '', regex=False)
+        new_df['Nome'] = df['Nome']
+        new_df['Cor Grupo Material'] = df['Cor Grupo Material']
+        new_df['SKU'] = df['Sku']
+        new_df['Referência Loja'] = df['Referência Loja']
+        new_df['Ean Produto'] = df['Ean Produto'].astype(str).str.replace(',', '', regex=False)
+        new_df['Tamanho'] = df['Tamanho']
+        new_df['Quantidade'] = df['Quantidade']
+        new_df['QUANT EXTRA'] = df['Quantidade'] + 5
+        new_df['MSRP'] = df['MSRP'].apply(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
         new_df['VALOR DO FILTRO'] = 1
-        df_ean_str = df['EAN'].astype(str).str.zfill(13)
+        df_ean_str = df['Ean Produto'].astype(str).str.zfill(13)
         new_df['PREFIXO DA EMP'] = df_ean_str.str[:7]
         new_df['ITEM DE REF'] = '0' + df_ean_str.str[7:12]
         new_df['SERIAL'] = ''
@@ -43,8 +43,8 @@ def process_excel(uploaded_file):
 
         # 5. Reordenar colunas para a ordem final desejada
         final_columns = [
-            'PEDIDO', 'STYLE NAME', 'MATERIAL-COLOR', 'SKU', 'MODELO', 'EAN', 
-            'TAM', 'QUANT', 'QUANT EXTRA', 'VALOR', 'NUM DA ETQ', 'VALOR DO FILTRO',
+            'Pedido', 'Nome', 'Cor Grupo Material', 'SKU', 'Referência Loja', 'Ean Produto', 
+            'Tamanho', 'Quantidade', 'QUANT EXTRA', 'MSRP', 'NUM DA ETQ', 'VALOR DO FILTRO',
             'PREFIXO DA EMP', 'ITEM DE REF', 'SERIAL'
         ]
         expanded_df = expanded_df[final_columns]
@@ -69,14 +69,14 @@ if uploaded_file is not None:
         st.write("Amostra dos dados processados (primeiras 50 linhas):")
         st.dataframe(processed_df.head(50))
 
-        pedidos = processed_df['PEDIDO'].unique()
+        pedidos = processed_df['Pedido'].unique()
         st.write(f"Encontrados {len(pedidos)} pedidos únicos. Gerando planilhas individuais...")
 
         # Criar um arquivo ZIP em memória contendo todos os arquivos .xls
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
             for pedido in pedidos:
-                pedido_df = processed_df[processed_df['PEDIDO'] == pedido].copy()
+                pedido_df = processed_df[processed_df['Pedido'] == pedido].copy()
                 
                 # Converter todas as colunas para texto
                 for col in pedido_df.columns:
